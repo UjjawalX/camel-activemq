@@ -38,10 +38,8 @@
 	</camelContext>
 
 
-<!-- 
 	<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent"
 		p:configuration-ref="jmsConfig" p:transacted="true" p:cacheLevelName="CACHE_CONSUMER" />
-
 
 	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration"
 		p:connectionFactory-ref="nakedConnectionFactory"
@@ -50,18 +48,6 @@
 
 	<bean id="nakedConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
 		p:brokerURL="tcp://localhost:61616" />
-		
-	 -->	
-		<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent"
-    p:configuration-ref="jmsConfig" p:transacted="true" p:cacheLevelName="CACHE_CONSUMER" />
-
-<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration"
-    p:connectionFactory-ref="nakedConnectionFactory"
-    p:concurrentConsumers="20" p:maxConcurrentConsumers="500"
-    p:idleConsumerLimit="10" />
-
-<bean id="nakedConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
-    p:brokerURL="tcp://localhost:61616" />
 
 
 </beans>
