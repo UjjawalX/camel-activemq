@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<broker xmlns="http://activemq.apache.org/schema/core" useJmx="true"
+		persistent="false">
+		<transportConnectors>
+			<transportConnector uri="tcp://localhost:61616" />
+		</transportConnectors>
+	</broker>
+
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<route>
+			<from uri="file:src/data?noop=true" />
+			<to uri="activemq:personnel.records" />
+		</route>
+		<route>
+			<from uri="activemq:personnel.records" />
+			<log message="${body}" />
+
+			<choice>
+				<when>
+					<xpath>/person/city = 'London'</xpath>
+					<to uri="file:target/messages/uk" />
+				</when>
+				<otherwise>
+					<to uri="file:target/messages/others" />
+				</otherwise>
+			</choice>
+		</route>
+	</camelContext>
+
+
+<!-- 
+	<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent"
+		p:configuration-ref="jmsConfig" p:transacted="true" p:cacheLevelName="CACHE_CONSUMER" />
+
+
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration"
+		p:connectionFactory-ref="nakedConnectionFactory"
+		p:concurrentConsumers="20" p:maxConcurrentConsumers="500"
+		p:idleConsumerLimit="10" />
+
+	<bean id="nakedConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
+		p:brokerURL="tcp://localhost:61616" />
+		
+	 -->	
+		<bean id="activemq" class="org.apache.camel.component.jms.JmsComponent"
+    p:configuration-ref="jmsConfig" p:transacted="true" p:cacheLevelName="CACHE_CONSUMER" />
+
+<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration"
+    p:connectionFactory-ref="nakedConnectionFactory"
+    p:concurrentConsumers="20" p:maxConcurrentConsumers="500"
+    p:idleConsumerLimit="10" />
+
+<bean id="nakedConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
+    p:brokerURL="tcp://localhost:61616" />
+
+
+</beans>
